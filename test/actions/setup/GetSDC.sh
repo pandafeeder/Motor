@@ -1,0 +1,1 @@
+MGenOutput sdc.gz
