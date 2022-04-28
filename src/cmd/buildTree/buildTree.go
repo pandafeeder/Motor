@@ -11,7 +11,7 @@ plan:
 
 package main
 
-import . "motor/node"
+import . "motor/tree"
 import (
 	"bufio"
         "errors"
@@ -52,21 +52,6 @@ func main() {
         wg.Wait()
 
         UpdateDependency(&nodes)
-	//edges := make([]string, 0)
-	//for _, n := range nodes {
-	//	for _, i := range n.Inputs {
-	//		edges = append(edges, i)
-	//	}
-	//	for _, o := range n.Outputs {
-	//		edges = append(edges, o)
-	//	}
-	//}
-        //for _, e := range edges {
-        //        var children = make([]Node, 0)
-        //        var parents  = make([]Node, 0)
-        //        for _, n := nodes {
-        //        }
-        //}
 }
 
 func scanDir(dir string) (files []string) {

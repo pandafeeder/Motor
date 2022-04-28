@@ -14,29 +14,42 @@ const (
 )
 
 type File struct {
-	Mdsum string `json:"md5sum"`
-	Name  string `json:"name"`
-	Path  string `json:"path"`
+	Md5sum string `json:"Md5sum"`
+	Name  string `json:"Name"`
+	Path  string `json:"Path"`
 }
 
+// expose Parents/Children as slice of string whose value is other nodes' Name
+// can't serilazation circled json
 type Node struct {
-	Name       string  `json:"name"`
-	Sourcefile string  `json:"sourcefile"`
-	Inputs     []*File `json:"inputs"`
-	Outputs    []*File `json:"output"`
-	Parents    []*Node `json:"parents"`
-	Children   []*Node `json:"children"`
-	Status     Status  `json:"status"`
+	Name       string   `json:"Name"`
+	Sourcefile string   `json:"Sourcefile"`
+	Inputs     []*File  `json:"Inputs"`
+	Outputs    []*File  `json:"Outputs"`
+	Parents    []string `json:"Parents"`
+	Children   []string `json:"Children"`
+	parents    []*Node
+	children   []*Node
+	Status     Status `json:"Status"`
+	Level      int  `json:"Level"`
 }
 
 func (n *Node) ToJSONBytes() ([]byte, error) {
 	return json.Marshal(n)
 }
 
-func (n *Node) ToJSONString() (string) {
-        bytes, err := n.ToJSONBytes()
-        if err != nil {
-                panic(err)
-        }
-        return string(bytes)
+func (n *Node) ToJSONString() (string, error) {
+	bytes, err := n.ToJSONBytes()
+	return string(bytes), err
+}
+
+// parents/children field of returned Node is always nil
+func JSONStringToNode(str string) (Node, error) {
+	node := Node{}
+	err := json.Unmarshal([]byte(str), &node)
+	return node, err
+}
+
+func (n Node) String() string {
+        return n.Name
 }
