@@ -116,10 +116,13 @@ var c1_1_1 = Node{
 	-1,
 }
 
-var nodes = []*Node{&root, &c1, &c2, &c1_1, &c1_2, &c2_1, &c1_1_1}
+var input_nodes = []Node{root, c1, c2, c1_1, c1_2, c2_1, c1_1_1}
 
 func TestBuildTree(t *testing.T) {
-	nodes = BuildTree(nodes)
+        nodes, err := BuildTree(input_nodes)
+        if err != nil {
+                t.Errorf("Got error as '%s' which shouldn't", err)
+        }
 	expected_level := []int{0, 1, 1, 2, 2, 2, 3}
 	returned_level := make([]int, 0)
 	for _, node := range nodes {
@@ -130,24 +133,32 @@ func TestBuildTree(t *testing.T) {
 		t.Errorf("Expecting: %v\n", expected_level)
 		t.Errorf("Got:       %v\n", returned_level)
 	}
-	if len(root.parents) != 0 {
+
+        root_copy := nodes[0]
+        c1_copy := nodes[1]
+        c2_copy := nodes[2]
+        c1_2_copy := nodes[4]
+        c2_1_copy := nodes[5]
+        c1_1_1_copy := nodes[6]
+
+	if len(root_copy.parents) != 0 {
 		t.Error("root's parents is not empty")
 	}
-	if len(root.children) != 3 {
+	if len(root_copy.children) != 3 {
 		t.Errorf("root's children not 3 but %d", len(root.children))
 	}
-	if c1.parents[0] != &root {
-		t.Errorf("c1 parent not root but %v", c1.parents[0])
+	if c1_copy.parents[0] != root_copy {
+		t.Errorf("c1 parent not root but %v", c1_copy.parents[0])
 	}
-        if !reflect.DeepEqual(c1_1_1.parents, []*Node{&c1_2, &c2_1}) {
+        if !reflect.DeepEqual(c1_1_1_copy.parents, []*Node{c1_2_copy, c2_1_copy}) {
                 t.Error("c1_1_1 parents not expected")
-                t.Errorf("Expecting: [%v %v]", c1_2, c2_1)
-                t.Errorf("Got:       %v", c1_1_1.parents)
+                t.Errorf("Expecting: [%v %v]", c1_2_copy, c2_1_copy)
+                t.Errorf("Got:       %v", c1_1_1_copy.parents)
         }
-        if !reflect.DeepEqual(c2_1.parents, []*Node{&root, &c2}) {
+        if !reflect.DeepEqual(c2_1_copy.parents, []*Node{root_copy, c2_copy}) {
                 t.Error("c2_1 parents not expected")
-                t.Errorf("Expecting: [%v %v]", root, c2)
-                t.Errorf("Got:       %v", c2_1.parents)
+                t.Errorf("Expecting: [%v %v]", root_copy, c2_copy)
+                t.Errorf("Got:       %v", c2_1_copy.parents)
         }
 	//jbytes, err := json.MarshalIndent(nodes, "", "    ")
 	//if err != nil {
@@ -156,3 +167,41 @@ func TestBuildTree(t *testing.T) {
 	//        fmt.Println(string(jbytes))
 	//}
 }
+
+var bad_node = Node{
+        "bad_node",
+	"/fakepath/bad_node",
+	[]*File{&c1_outf1},
+	[]*File{&root_outf2},
+	[]string{},
+	[]string{},
+	[]*Node{},
+	[]*Node{},
+	InValid,
+	-1,
+}
+
+var input_circular_nodes = []Node{root, c1, c2, bad_node, c1_1, c1_2, c2_1, c1_1_1}
+// expecting error as File has multi parents
+func TestBuildTreeForCircular(t *testing.T) {
+        _, err := BuildTree(input_circular_nodes)
+        if err == nil {
+                t.Error("Expecting error as `File root_outf2 has multi parents declaring it as output`")
+        }
+}
+
+// expecting error as Circular dependency found
+func TestCircular(t *testing.T) {
+        nodes, err := BuildTree(input_nodes)
+        if err != nil {
+                t.Errorf("Got error as '%s' which shouldn't", err)
+        }
+        c1_copy := nodes[1]
+        c1_1_copy := nodes[3]
+        c1_copy.parents = append(c1_copy.parents, c1_1_copy)
+        err = CheckCircularDependency(nodes)
+        if err == nil {
+                t.Error("Expecting error as `Circular dependency found for Node c1")
+        }
+}
+

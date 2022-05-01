@@ -5,9 +5,9 @@ Tree related operations
 package tree
 
 import (
-        "os"
 	"fmt"
 	"motor/data_utils"
+        "errors"
 )
 
 type pair struct {
@@ -16,10 +16,16 @@ type pair struct {
 }
 
 /*
-set a node's parents/children according to its inputs/outputs
+BuildTree copied each node's value 
+and operated on copied node's ptr afterwards
+AKA original Node object untouched
 */
-func BuildTree(nodes []*Node) []*Node {
-	edges := make([]*File, 0, 0)
+func BuildTree(input_nodes []Node) ([]*Node, error) {
+        nodes := make([]*Node, 0)
+        for id, _ := range input_nodes {
+                nodes = append(nodes, &input_nodes[id])
+        }
+	edges := make([]*File, 0)
 	for _, node := range nodes {
 		inputs := node.Inputs
 		for _, i := range inputs {
@@ -33,8 +39,8 @@ func BuildTree(nodes []*Node) []*Node {
 	edges = data_utils.UniqSliceOfPtrByVal(edges)
         mapping := make(map[*File]pair)
 	for _, edge := range edges {
-		parent_nodes := make([]*Node, 0, 0)
-		children_nodes := make([]*Node, 0, 0)
+		parent_nodes := make([]*Node, 0)
+		children_nodes := make([]*Node, 0)
 		for _, node := range nodes {
 			for _, file := range node.Outputs {
 				if *edge == *file {
@@ -48,8 +54,7 @@ func BuildTree(nodes []*Node) []*Node {
                         }
 		}
                 if len(parent_nodes) > 1 {
-                        fmt.Printf("Error(tree.BuildTree): File %v has multi parents declaring it as output\n", edge)
-                        os.Exit(1)
+                        return nil, errors.New(fmt.Sprintf("Error(tree.BuildTree): File %s has multi parents declaring it as output\n", edge))
                 }
                 mapping[edge] = pair{parent_nodes, children_nodes}
 	}
@@ -75,7 +80,11 @@ func BuildTree(nodes []*Node) []*Node {
                 }
         }
         nodes = AnnotaeNodeLevel(nodes)
-        return nodes
+        has_err := CheckCircularDependency(nodes)
+        if has_err != nil {
+                return nil, errors.New(fmt.Sprintf("Error(tree.BuildTree): %s",has_err))
+        }
+        return nodes, nil
 }
 
 func AnnotaeNodeLevel(nodes []*Node) []*Node {
@@ -99,6 +108,26 @@ func AnnotaeNodeLevel(nodes []*Node) []*Node {
        return nodes
 }
 
+func CheckCircularDependency(nodes []*Node) error {
+        for _, node := range nodes {
+                parents := node.parents
+                children := node.children
+                if len(parents) == 0 || len(children) == 0 {
+                        continue
+                }
+                for _, p := range parents {
+                        for _, c := range children {
+                                if p == c {
+                                        return errors.New("Circular dependency found for Node "+node.Name)
+                                }
+                        }
+                }
+
+        }
+        return nil
+}
+
+
 //func UpdateDependency(nodes []*Node) {
 //}
 //
@@ -106,7 +135,5 @@ func AnnotaeNodeLevel(nodes []*Node) []*Node {
 //}
 //
 //func FindNodeByLevel(nodes []*Node) []*Node {
-//}
-//func SanityCheckOnTree() error {
 //}
 

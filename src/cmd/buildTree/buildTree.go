@@ -13,11 +13,10 @@ package main
 
 import . "motor/tree"
 import (
-	"bufio"
-        "errors"
+        "motor/file_utils"
+	"errors"
 	"flag"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -25,11 +24,13 @@ import (
 	"strings"
 	"sync"
 )
+import "encoding/json"
 
 //throw error if $2 contains anything other than space
 var inputPat = regexp.MustCompile(`^\s*MRequireInput\s+(\S+)(.*)$`)
 var outputPat = regexp.MustCompile(`^\s*MGenOutput\s(\S+)(.*)$`)
 var unemptyPat = regexp.MustCompile(`\S`)
+var pat_mapping = map[string]*regexp.Regexp{"input": inputPat, "output": outputPat}
 
 func main() {
 	flag.Parse()
@@ -41,17 +42,25 @@ func main() {
 	files := scanDir(root_dir)
 
 	var wg sync.WaitGroup
-        var nodes = make([]Node, len(files))
-        for i, f := range files {
-                wg.Add(1)
-                go func(i int, f string) {
-                        defer wg.Done()
-                        nodes[i] = makeNodeFromFile(f)
-                }(i, f)
+	var nodes = make([]Node, len(files))
+	for i, f := range files {
+		wg.Add(1)
+		go func(i int, f string) {
+			defer wg.Done()
+                        node, err := makeNodeFromFile(f)
+                        if err != nil {
+                                panic(err)
+                        }
+                        nodes[i] = node
+		}(i, f)
+	}
+	wg.Wait()
+        graph_nodes, err := BuildTree(nodes)
+        if err != nil {
+                panic(err)
         }
-        wg.Wait()
-
-        UpdateDependency(&nodes)
+        jbytes, _ := json.MarshalIndent(graph_nodes, "", "    ")
+        fmt.Println(string(jbytes))
 }
 
 func scanDir(dir string) (files []string) {
@@ -68,44 +77,67 @@ func scanDir(dir string) (files []string) {
 	return
 }
 
-func makeNodeFromFile(file string) (node Node) {
-	fmt.Printf("INFO: Parsing file %s\n", file)
+func makeNodeFromFile(file string) (Node, error) {
+	fmt.Printf("Info(makeNodeFromFile): Parsing file %s\n", file)
 	fh, err := os.Open(file)
 	if err != nil {
 		panic(err)
 	}
 	defer fh.Close()
-	inputs := make([]string, 0)
-	outputs := make([]string, 0)
-	reader := bufio.NewReader(fh)
-	for {
-		line_bytes, _, err := reader.ReadLine()
-		if err == io.EOF {
-			break
-		}
-		line := string(line_bytes)
-		if i_match := inputPat.FindStringSubmatch(line); i_match != nil {
-			if unemptyPat.MatchString(i_match[2]) {
-				fmt.Printf("ERROR: file %s syntax error as multi arguments for MRequireInput\n", file)
-                                panic(errors.New(""))
-			}
-			inputs = append(inputs, i_match[1])
-		}
-		if o_match := outputPat.FindStringSubmatch(line); o_match != nil {
-			if unemptyPat.MatchString(o_match[2]) {
-				fmt.Printf("ERROR: file %s syntax error as multi arguments for MGenOutput\n", file)
-                                panic(errors.New(""))
-			}
-			outputs = append(outputs, o_match[1])
-		}
+	inputs := make([]*File, 0)
+	outputs := make([]*File, 0)
+        lines, err := file_utils.ReadLinesFromFile(file)
+        if err != nil {
+                panic(err)
+        }
+        for _, line := range lines {
+                file_obj, kind, err := GrabFileFromLine(line)
+                if err != nil {
+                        panic(err)
+                }
+                if kind == "input" && file_obj.Name != "" {
+                        inputs = append(inputs, file_obj)
+                }
+                if kind == "output" && file_obj.Name != "" {
+                        outputs = append(outputs, file_obj)
+                }
 	}
-	node = Node{
+	file_name := strings.Split(filepath.Base(file), ".")[0]
+        node := Node{
+		Name:       file_name,
 		Sourcefile: file,
 		Inputs:     inputs,
 		Outputs:    outputs,
 		Parents:    []string{},
 		Children:   []string{},
-		Level:      0,
+		Status:     InValid,
+		Level:      -1,
 	}
-        return
+	return node, nil
+}
+
+func GrabFileFromLine(line string) (*File, string, error) {
+        file_obj := File{}
+        file_type := ""
+        for kind, pat := range pat_mapping {
+                file_type = kind
+                if match := pat.FindStringSubmatch(line); match != nil {
+                        if unemptyPat.MatchString(match[2]) {
+			        err_msg := fmt.Sprintf("Error(makeNodeFromFile): `%s` syntax error as multi arguments for MRequireInput|MGenOutput\n", line)
+                                return &File{}, "", errors.New(err_msg)
+                        }
+                        got_file := match[1]
+                        if exists, _ := file_utils.CheckFileExistence(got_file); exists == true {
+                                md5sum, err := file_utils.GetFileMd5sum(got_file)
+                                if err != nil {
+                                        panic(err)
+                                }
+                                file_obj.Md5sum = md5sum
+                        }
+                        file_obj.Name = filepath.Base(got_file)
+                        file_obj.Path = got_file
+                        break
+                }
+        }
+        return &file_obj, file_type, nil
 }

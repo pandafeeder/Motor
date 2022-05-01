@@ -1,1 +1,0 @@
-MGenOutput def.gz

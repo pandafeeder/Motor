@@ -13,14 +13,19 @@ const (
 	InValid
 )
 
+// use Md5sum to indicate file existence
 type File struct {
 	Md5sum string `json:"Md5sum"`
 	Name  string `json:"Name"`
 	Path  string `json:"Path"`
 }
 
+func (f File) String() string {
+        return f.Name
+}
+
 // expose Parents/Children as slice of string whose value is other nodes' Name
-// can't serilazation circled json
+// can't serilaze circled json
 type Node struct {
 	Name       string   `json:"Name"`
 	Sourcefile string   `json:"Sourcefile"`

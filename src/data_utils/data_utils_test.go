@@ -43,3 +43,15 @@ func TestUniqSliceFuncs(t *testing.T) {
                 }
         }
 }
+
+func TestIndexOf(t *testing.T) {
+        int_slice := []int{1,2,3,4,5}
+        no_existing_ele_id := IndexOf(int_slice, 0)
+        if no_existing_ele_id != -1 {
+                t.Error("Non existing ele index should be -1")
+        }
+        two_id := IndexOf(int_slice, 2)
+        if two_id != 1 {
+                t.Error("index of 2 in int_slice should be 1")
+        }
+}
