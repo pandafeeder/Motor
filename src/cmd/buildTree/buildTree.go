@@ -11,6 +11,7 @@ plan:
 
 package main
 
+//import "encoding/json"
 import . "motor/tree"
 import (
         "motor/file_utils"
@@ -24,7 +25,6 @@ import (
 	"strings"
 	"sync"
 )
-import "encoding/json"
 
 //throw error if $2 contains anything other than space
 var inputPat = regexp.MustCompile(`^\s*MRequireInput\s+(\S+)(.*)$`)
@@ -59,8 +59,8 @@ func main() {
         if err != nil {
                 panic(err)
         }
-        jbytes, _ := json.MarshalIndent(graph_nodes, "", "    ")
-        fmt.Println(string(jbytes))
+        //jbytes, _ := json.MarshalIndent(graph_nodes, "", "    ")
+        //fmt.Println(string(jbytes))
 }
 
 func scanDir(dir string) (files []string) {

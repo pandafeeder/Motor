@@ -1,0 +1,11 @@
+MRequireInput data/Fender
+MRequireInput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheel
+MGenOutput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender
+
+echo "Install Fender on Frame"
+sleep 3
+touch data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender
+echo "Done"
+
+exit
+

@@ -1,0 +1,12 @@
+MRequireInput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain
+MRequireInput data/Seat
+MGenOutput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat
+
+
+echo "Install Seat"
+sleep 10
+touch data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat
+echo "Done"
+
+exit
+

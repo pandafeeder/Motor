@@ -1,0 +1,12 @@
+MRequireInput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender
+MRequireInput data/DriveChain
+MGenOutput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain
+
+echo "Install DriveChain"
+sleep 8
+touch data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain
+echo "Done"
+
+exit
+
+
