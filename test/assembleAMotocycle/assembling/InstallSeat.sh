@@ -1,3 +1,4 @@
+#!/bin/bash
 MRequireInput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain
 MRequireInput data/Seat
 MGenOutput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat

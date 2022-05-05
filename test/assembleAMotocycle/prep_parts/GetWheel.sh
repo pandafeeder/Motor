@@ -1,3 +1,4 @@
+#!/bin/bash
 MGenOutput data/Wheel
 echo "Getting ..."
 sleep 10

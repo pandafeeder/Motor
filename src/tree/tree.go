@@ -7,6 +7,7 @@ package tree
 import (
 	"fmt"
 	"motor/data_utils"
+        "motor/file_utils"
         "errors"
 )
 
@@ -80,6 +81,7 @@ func BuildTree(input_nodes []Node) ([]*Node, error) {
                 }
         }
         nodes = AnnotaeNodeLevel(nodes)
+        nodes = AnnotaeMissingStatus(nodes)
         has_err := CheckCircularDependency(nodes)
         if has_err != nil {
                 return nil, errors.New(fmt.Sprintf("Error(tree.BuildTree): %s",has_err))
@@ -108,6 +110,24 @@ func AnnotaeNodeLevel(nodes []*Node) []*Node {
        return nodes
 }
 
+// neither found an existing input file nor a node declaring output for it
+func AnnotaeMissingStatus(nodes []*Node) []*Node {
+        for _, node := range nodes {
+                missing := []string{}
+                for _, in := range node.Inputs {
+                        if exists, _ := file_utils.CheckFileExistence(in.Path); exists {
+                                continue
+                        }
+                        if parent_node := FindNodeGenFile(nodes, *in); parent_node != nil {
+                                continue
+                        }
+                        missing = append(missing, in.Path)
+                }
+                node.Missing = missing
+        }
+        return nodes
+}
+
 func CheckCircularDependency(nodes []*Node) error {
         for _, node := range nodes {
                 parents := node.parents
@@ -122,11 +142,25 @@ func CheckCircularDependency(nodes []*Node) error {
                                 }
                         }
                 }
-
         }
         return nil
 }
 
+func FindNodeGenFile(nodes []*Node, file File) *Node {
+        var found_node *Node
+        for _, node := range nodes {
+                for _, in := range node.Outputs {
+                        if file.Path == in.Path {
+                                found_node = node
+                                break
+                        }
+                }
+                if found_node != nil {
+                        break
+                }
+        }
+        return found_node
+}
 
 //func UpdateDependency(nodes []*Node) {
 //}

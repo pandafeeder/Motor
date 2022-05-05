@@ -5,12 +5,31 @@ A node representing a action script
 package tree
 
 import "encoding/json"
+import "motor/file_utils"
 
-type Status uint8
+type Status string
 
+/*
+Ready : to be queued 
+Queued: waiting for running
+MissingDependency : missing dependency
+Running : running
+FinishWithError : finished with error
+FinishWithoutError : finished without error
+Skipped : skipped
+Unready : not ready, this mainly means dependencies ok, but user stopped
+Tracing: dependencies are being generated
+*/
 const (
-	Valid Status = iota
-	InValid
+	Ready Status = "Ready"
+        Queued Status = "Queued"
+        MissingDependency Status = "MissingDependency"
+        Running Status = "Running"
+        FinishWithError Status = "FinishWithError"
+        FinishWithoutError Status = "FinishWithoutError"
+        Skipped Status = "Skipped"
+        Unready Status = "Unready"
+        Tracing Status = "Tracing"
 )
 
 // use Md5sum to indicate file existence
@@ -33,6 +52,7 @@ type Node struct {
 	Outputs    []*File  `json:"Outputs"`
 	Parents    []string `json:"Parents"`
 	Children   []string `json:"Children"`
+        Missing    []string `json:"Missing"`
 	parents    []*Node
 	children   []*Node
 	Status     Status `json:"Status"`
@@ -58,3 +78,35 @@ func JSONStringToNode(str string) (Node, error) {
 func (n Node) String() string {
         return n.Name
 }
+
+// sololy by inputs and outputs
+// not checking parents' status here
+// relay such checking to Worker
+func (n *Node) UpdateStatus() {
+        if len(n.Missing) > 0 {
+                n.Status = MissingDependency
+                return
+        }
+        if len(n.Inputs) == 0 {
+                n.Status = Ready
+                return
+        }
+        all_inputs_ok := 1
+        for _, in := range n.Inputs {
+                exists, _ := file_utils.CheckFileExistence(in.Path)
+                if !exists {
+                        all_inputs_ok = 0
+                        break
+                }
+        }
+        if all_inputs_ok == 1 {
+                n.Status = Ready
+        } else {
+                n.Status = Tracing
+        }
+}
+
+func (n *Node) SetStatus(stat Status) {
+        n.Status = stat
+}
+

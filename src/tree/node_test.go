@@ -20,9 +20,10 @@ var a_node = Node{
 	[]*File{&outf1},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	Valid,
+	Ready,
         -1,
 }
 
@@ -35,7 +36,8 @@ func TestSingleNode2JSON(t *testing.T) {
 		`"Outputs":[{"Md5sum":"outf1md5sum","Name":"outputfile","Path":"/fakepath/outf1"}],` +
 		`"Parents":[],` +
 		`"Children":[],` +
-		`"Status":0,` +
+		`"Missing":[],` +
+		`"Status":"Ready",` +
                 `"Level":-1}`
 	if jstr != expected_str {
 		t.Error("SingleNode JSON serialization get unexpected str")
@@ -56,7 +58,8 @@ func TestSingleNodeFromJSON(t *testing.T) {
 		`"Outputs":[{"Md5sum":"outf1md5sum","Name":"outputfile","Path":"/fakepath/outf1"}],` +
 		`"Parents":[],` +
 		`"Children":[],` +
-		`"Status":0,` +
+		`"Missing":[],` +
+		`"Status":"Ready",` +
                 `"Level":-1}`
 	node := Node{}
         err := json.Unmarshal([]byte(json_str), &node)

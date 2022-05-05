@@ -1,3 +1,4 @@
+#!/bin/bash
 MGenOutput data/Exhaust
 echo "Getting ..."
 sleep 10

@@ -1,3 +1,4 @@
+#!/bin/bash
 MGenOutput data/Fork
 echo "Getting ..."
 sleep 10

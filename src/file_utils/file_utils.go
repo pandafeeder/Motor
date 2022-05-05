@@ -5,8 +5,10 @@ import (
         "io"
         "os"
         "strings"
+        "strconv"
         "crypto/md5"
         "fmt"
+        "time"
 )
 
 func ReadLinesFromFile(file string) ([]string, error) {
@@ -50,3 +52,15 @@ func CheckFileExistence(file string) (bool, error) {
                 return false, err
         }
 }
+
+func GenFileSig() string {
+        now := time.Now()
+        pid := strconv.Itoa(os.Getpid())
+        timestamp := now.Format("20060102_150405")
+        return pid+"_"+timestamp
+}
+
+func FileIsExecutable(mode os.FileMode) bool {
+        return mode&0111 == 0111
+}
+

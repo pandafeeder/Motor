@@ -1,3 +1,4 @@
+#!/bin/bash
 MRequireInput data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat
 MGenOutput data/QA.rpt
 

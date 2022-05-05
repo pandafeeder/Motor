@@ -9,14 +9,14 @@ plan:
         supports multi arguments for MRequireInput/MGenOutput ?
 */
 
-package main
 
-//import "encoding/json"
+package core
+
+
 import . "motor/tree"
 import (
         "motor/file_utils"
 	"errors"
-	"flag"
 	"fmt"
 	"io/fs"
 	"os"
@@ -26,21 +26,19 @@ import (
 	"sync"
 )
 
+
 //throw error if $2 contains anything other than space
 var inputPat = regexp.MustCompile(`^\s*MRequireInput\s+(\S+)(.*)$`)
 var outputPat = regexp.MustCompile(`^\s*MGenOutput\s(\S+)(.*)$`)
 var unemptyPat = regexp.MustCompile(`\S`)
 var pat_mapping = map[string]*regexp.Regexp{"input": inputPat, "output": outputPat}
 
-func main() {
-	flag.Parse()
-	root_dir := flag.Arg(0)
+func Build(root_dir string) ([]*Node, error) {
 	if _, err := os.Stat(root_dir); os.IsNotExist(err) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	files := scanDir(root_dir)
-
+	files := ScanDir(root_dir)
 	var wg sync.WaitGroup
 	var nodes = make([]Node, len(files))
 	for i, f := range files {
@@ -57,16 +55,23 @@ func main() {
 	wg.Wait()
         graph_nodes, err := BuildTree(nodes)
         if err != nil {
-                panic(err)
+                return []*Node{}, err
         }
-        //jbytes, _ := json.MarshalIndent(graph_nodes, "", "    ")
-        //fmt.Println(string(jbytes))
+        return graph_nodes, nil
 }
 
-func scanDir(dir string) (files []string) {
+
+func ScanDir(dir string) (files []string) {
 	err := filepath.WalkDir(dir, func(path string, di fs.DirEntry, err error) error {
 		// ignore files whose names starts with '.'
 		if !di.IsDir() && !strings.HasPrefix(di.Name(), ".") {
+                        if fileinfo, err := di.Info(); err == nil {
+                                if is_executable := file_utils.FileIsExecutable(fileinfo.Mode()); !is_executable {
+                                        panic(errors.New("Error(ScanDir):"+path+" is not executable"))
+                                }
+                        } else {
+                                panic(err)
+                        }
 			files = append(files, path)
 		}
 		return nil
@@ -77,8 +82,9 @@ func scanDir(dir string) (files []string) {
 	return
 }
 
+
 func makeNodeFromFile(file string) (Node, error) {
-	fmt.Printf("Info(makeNodeFromFile): Parsing file %s\n", file)
+	//fmt.Printf("Info(makeNodeFromFile): Parsing file %s\n", file)
 	fh, err := os.Open(file)
 	if err != nil {
 		panic(err)
@@ -110,11 +116,13 @@ func makeNodeFromFile(file string) (Node, error) {
 		Outputs:    outputs,
 		Parents:    []string{},
 		Children:   []string{},
-		Status:     InValid,
+                Missing:    []string{},
+		Status:     Unready,
 		Level:      -1,
 	}
 	return node, nil
 }
+
 
 func GrabFileFromLine(line string) (*File, string, error) {
         file_obj := File{}
@@ -141,3 +149,5 @@ func GrabFileFromLine(line string) (*File, string, error) {
         }
         return &file_obj, file_type, nil
 }
+
+

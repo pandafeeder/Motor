@@ -1,0 +1,3 @@
+communication model:
+    Scheduler takes a context
+    Worker takes a context same as the one Scheduler takes

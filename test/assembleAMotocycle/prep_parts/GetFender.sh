@@ -1,7 +1,7 @@
 #!/bin/bash
-MGenOutput data/DriveChain
+MGenOutput data/Fender
 echo "Getting ..."
 sleep 10
-touch data/DriveChain
+touch data/Fender
 echo "Got it"
 exit

@@ -1,3 +1,4 @@
+#!/bin/bash
 MRequireInput data/FrameWithForkWithEngineWithExhaust
 MRequireInput data/GasTank
 MGenOutput data/FrameWithForkWithEngineWithExhaustWithGasTank

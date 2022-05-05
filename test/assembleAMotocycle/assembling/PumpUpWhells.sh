@@ -1,3 +1,4 @@
+#!/bin/bash
 MRequireInput data/Wheel
 MGenOutput data/PumpedUpWheel
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 MGenOutput data/GasTank
 echo "Getting ..."
 sleep 10

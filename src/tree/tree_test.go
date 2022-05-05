@@ -38,9 +38,10 @@ var root = Node{
 	[]*File{&root_outf1, &root_outf2},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 var c1 = Node{
@@ -50,9 +51,10 @@ var c1 = Node{
 	[]*File{&c1_outf1, &c1_outf2},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 var c2 = Node{
@@ -62,9 +64,10 @@ var c2 = Node{
 	[]*File{&c2_outf1},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 var c1_1 = Node{
@@ -74,9 +77,10 @@ var c1_1 = Node{
 	[]*File{&c1_1_outf1, &c1_1_outf2},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 var c1_2 = Node{
@@ -86,9 +90,10 @@ var c1_2 = Node{
 	[]*File{&c1_2_outf1},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 var c2_1 = Node{
@@ -98,9 +103,10 @@ var c2_1 = Node{
 	[]*File{&c2_1_outf1},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 var c1_1_1 = Node{
@@ -110,9 +116,10 @@ var c1_1_1 = Node{
 	[]*File{},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 
@@ -175,9 +182,10 @@ var bad_node = Node{
 	[]*File{&root_outf2},
 	[]string{},
 	[]string{},
+	[]string{},
 	[]*Node{},
 	[]*Node{},
-	InValid,
+	Unready,
 	-1,
 }
 

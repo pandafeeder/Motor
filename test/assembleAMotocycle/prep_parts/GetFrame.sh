@@ -1,3 +1,4 @@
+#!/bin/bash
 MGenOutput data/Frame
 echo "Getting ..."
 sleep 10
