@@ -17,7 +17,7 @@ Running : running
 FinishWithError : finished with error
 FinishWithoutError : finished without error
 Skipped : skipped
-Unready : not ready, this mainly means dependencies ok, but user stopped
+Unready : not ready, this mainly means dependencies ok, but user stopped or parent node failed
 Tracing: dependencies are being generated
 */
 const (
@@ -83,6 +83,16 @@ func (n Node) String() string {
 // not checking parents' status here
 // relay such checking to Worker
 func (n *Node) UpdateStatus() {
+        //println("Updating status for node "+n.Name)
+        if n.Status == FinishWithoutError {
+                return
+        }
+        if n.Status == FinishWithError {
+                return
+        }
+        if n.Status == Running {
+                return
+        }
         if len(n.Missing) > 0 {
                 n.Status = MissingDependency
                 return

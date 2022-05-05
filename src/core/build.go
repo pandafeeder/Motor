@@ -9,23 +9,20 @@ plan:
         supports multi arguments for MRequireInput/MGenOutput ?
 */
 
-
 package core
-
 
 import . "motor/tree"
 import (
-        "motor/file_utils"
 	"errors"
 	"fmt"
 	"io/fs"
+	"motor/file_utils"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
 )
-
 
 //throw error if $2 contains anything other than space
 var inputPat = regexp.MustCompile(`^\s*MRequireInput\s+(\S+)(.*)$`)
@@ -45,33 +42,32 @@ func Build(root_dir string) ([]*Node, error) {
 		wg.Add(1)
 		go func(i int, f string) {
 			defer wg.Done()
-                        node, err := makeNodeFromFile(f)
-                        if err != nil {
-                                panic(err)
-                        }
-                        nodes[i] = node
+			node, err := makeNodeFromFile(f)
+			if err != nil {
+				panic(err)
+			}
+			nodes[i] = node
 		}(i, f)
 	}
 	wg.Wait()
-        graph_nodes, err := BuildTree(nodes)
-        if err != nil {
-                return []*Node{}, err
-        }
-        return graph_nodes, nil
+	graph_nodes, err := BuildTree(nodes)
+	if err != nil {
+		return []*Node{}, err
+	}
+	return graph_nodes, nil
 }
-
 
 func ScanDir(dir string) (files []string) {
 	err := filepath.WalkDir(dir, func(path string, di fs.DirEntry, err error) error {
 		// ignore files whose names starts with '.'
 		if !di.IsDir() && !strings.HasPrefix(di.Name(), ".") {
-                        if fileinfo, err := di.Info(); err == nil {
-                                if is_executable := file_utils.FileIsExecutable(fileinfo.Mode()); !is_executable {
-                                        panic(errors.New("Error(ScanDir):"+path+" is not executable"))
-                                }
-                        } else {
-                                panic(err)
-                        }
+			if fileinfo, err := di.Info(); err == nil {
+				if is_executable := file_utils.FileIsExecutable(fileinfo.Mode()); !is_executable {
+					panic(errors.New("Error(ScanDir):" + path + " is not executable"))
+				}
+			} else {
+				panic(err)
+			}
 			files = append(files, path)
 		}
 		return nil
@@ -82,7 +78,6 @@ func ScanDir(dir string) (files []string) {
 	return
 }
 
-
 func makeNodeFromFile(file string) (Node, error) {
 	//fmt.Printf("Info(makeNodeFromFile): Parsing file %s\n", file)
 	fh, err := os.Open(file)
@@ -92,62 +87,59 @@ func makeNodeFromFile(file string) (Node, error) {
 	defer fh.Close()
 	inputs := make([]*File, 0)
 	outputs := make([]*File, 0)
-        lines, err := file_utils.ReadLinesFromFile(file)
-        if err != nil {
-                panic(err)
-        }
-        for _, line := range lines {
-                file_obj, kind, err := GrabFileFromLine(line)
-                if err != nil {
-                        panic(err)
-                }
-                if kind == "input" && file_obj.Name != "" {
-                        inputs = append(inputs, file_obj)
-                }
-                if kind == "output" && file_obj.Name != "" {
-                        outputs = append(outputs, file_obj)
-                }
+	lines, err := file_utils.ReadLinesFromFile(file)
+	if err != nil {
+		panic(err)
+	}
+	for _, line := range lines {
+		file_obj, kind, err := GrabFileFromLine(line)
+		if err != nil {
+			panic(err)
+		}
+		if kind == "input" && file_obj.Name != "" {
+			inputs = append(inputs, file_obj)
+		}
+		if kind == "output" && file_obj.Name != "" {
+			outputs = append(outputs, file_obj)
+		}
 	}
 	file_name := strings.Split(filepath.Base(file), ".")[0]
-        node := Node{
+	node := Node{
 		Name:       file_name,
 		Sourcefile: file,
 		Inputs:     inputs,
 		Outputs:    outputs,
 		Parents:    []string{},
 		Children:   []string{},
-                Missing:    []string{},
+		Missing:    []string{},
 		Status:     Unready,
 		Level:      -1,
 	}
 	return node, nil
 }
 
-
 func GrabFileFromLine(line string) (*File, string, error) {
-        file_obj := File{}
-        file_type := ""
-        for kind, pat := range pat_mapping {
-                file_type = kind
-                if match := pat.FindStringSubmatch(line); match != nil {
-                        if unemptyPat.MatchString(match[2]) {
-			        err_msg := fmt.Sprintf("Error(makeNodeFromFile): `%s` syntax error as multi arguments for MRequireInput|MGenOutput\n", line)
-                                return &File{}, "", errors.New(err_msg)
-                        }
-                        got_file := match[1]
-                        if exists, _ := file_utils.CheckFileExistence(got_file); exists == true {
-                                md5sum, err := file_utils.GetFileMd5sum(got_file)
-                                if err != nil {
-                                        panic(err)
-                                }
-                                file_obj.Md5sum = md5sum
-                        }
-                        file_obj.Name = filepath.Base(got_file)
-                        file_obj.Path = got_file
-                        break
-                }
-        }
-        return &file_obj, file_type, nil
+	file_obj := File{}
+	file_type := ""
+	for kind, pat := range pat_mapping {
+		file_type = kind
+		if match := pat.FindStringSubmatch(line); match != nil {
+			if unemptyPat.MatchString(match[2]) {
+				err_msg := fmt.Sprintf("Error(makeNodeFromFile): `%s` syntax error as multi arguments for MRequireInput|MGenOutput\n", line)
+				return &File{}, "", errors.New(err_msg)
+			}
+			got_file := match[1]
+			if exists, _ := file_utils.CheckFileExistence(got_file); exists == true {
+				md5sum, err := file_utils.GetFileMd5sum(got_file)
+				if err != nil {
+					panic(err)
+				}
+				file_obj.Md5sum = md5sum
+			}
+			file_obj.Name = filepath.Base(got_file)
+			file_obj.Path = got_file
+			break
+		}
+	}
+	return &file_obj, file_type, nil
 }
-
-

@@ -34,7 +34,7 @@ class Form {
     this.Text = new Konva.Text({
       width: this.width,
       height: this.height,
-      fontSize: 30,
+      fontSize: 20,
       text: `
         ${this.node.sourcefile}
         inputs: ${this.node.inputs}

@@ -1,0 +1,507 @@
+[
+    {
+        "Name": "FrameWithFork",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/FrameWithFork.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "Fork",
+                "Path": "data/Fork"
+            },
+            {
+                "Md5sum": "",
+                "Name": "Frame",
+                "Path": "data/Frame"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithFork",
+                "Path": "data/FrameWithFork"
+            }
+        ],
+        "Parents": [
+            "GetFork",
+            "GetFrame"
+        ],
+        "Children": [
+            "InstallEngineOnFrame"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 1
+    },
+    {
+        "Name": "InstallDriveChain",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallDriveChain.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender"
+            },
+            {
+                "Md5sum": "",
+                "Name": "DriveChain",
+                "Path": "data/DriveChain"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain"
+            }
+        ],
+        "Parents": [
+            "InstallFender",
+            "GetDriveChain"
+        ],
+        "Children": [
+            "InstallSeat"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 7
+    },
+    {
+        "Name": "InstallEngineOnFrame",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallEngineOnFrame.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithFork",
+                "Path": "data/FrameWithFork"
+            },
+            {
+                "Md5sum": "",
+                "Name": "Engine",
+                "Path": "data/Engine"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngine",
+                "Path": "data/FrameWithForkWithEngine"
+            }
+        ],
+        "Parents": [
+            "FrameWithFork",
+            "GetEngine"
+        ],
+        "Children": [
+            "InstallExhaust"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 2
+    },
+    {
+        "Name": "InstallExhaust",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallExhaust.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "Exhaust",
+                "Path": "data/Exhaust"
+            },
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngine",
+                "Path": "data/FrameWithForkWithEngine"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaust",
+                "Path": "data/FrameWithForkWithEngineWithExhaust"
+            }
+        ],
+        "Parents": [
+            "InstallEngineOnFrame",
+            "GetExhaust"
+        ],
+        "Children": [
+            "InstallGasTankOnFrame"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 3
+    },
+    {
+        "Name": "InstallFender",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallFender.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "Fender",
+                "Path": "data/Fender"
+            },
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheel",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheel"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFender"
+            }
+        ],
+        "Parents": [
+            "GetFender",
+            "InstallWheel"
+        ],
+        "Children": [
+            "InstallDriveChain"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 6
+    },
+    {
+        "Name": "InstallGasTankOnFrame",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallGasTankOnFrame.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaust",
+                "Path": "data/FrameWithForkWithEngineWithExhaust"
+            },
+            {
+                "Md5sum": "",
+                "Name": "GasTank",
+                "Path": "data/GasTank"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTank",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTank"
+            }
+        ],
+        "Parents": [
+            "InstallExhaust",
+            "GetGasTank"
+        ],
+        "Children": [
+            "InstallWheel"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 4
+    },
+    {
+        "Name": "InstallSeat",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallSeat.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChain"
+            },
+            {
+                "Md5sum": "",
+                "Name": "Seat",
+                "Path": "data/Seat"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat"
+            }
+        ],
+        "Parents": [
+            "InstallDriveChain",
+            "GetSeat"
+        ],
+        "Children": [
+            "FinalQA"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 8
+    },
+    {
+        "Name": "InstallWheel",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/InstallWheel.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTank",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTank"
+            },
+            {
+                "Md5sum": "",
+                "Name": "PumpedUpWheel",
+                "Path": "data/PumpedUpWheel"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheel",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheel"
+            }
+        ],
+        "Parents": [
+            "InstallGasTankOnFrame",
+            "PumpUpWheels"
+        ],
+        "Children": [
+            "InstallFender"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 5
+    },
+    {
+        "Name": "PumpUpWheels",
+        "Sourcefile": "../test/assembleAMotocycle/assembling/PumpUpWheels.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "Wheel",
+                "Path": "data/Wheel"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "PumpedUpWheel",
+                "Path": "data/PumpedUpWheel"
+            }
+        ],
+        "Parents": [
+            "GetWheel"
+        ],
+        "Children": [
+            "InstallWheel"
+        ],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 1
+    },
+    {
+        "Name": "GetDiskBrake",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetDiskBrake.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "DiskBrake",
+                "Path": "data/DiskBrake"
+            }
+        ],
+        "Parents": [],
+        "Children": [],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetDriveChain",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetDriveChain.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "DriveChain",
+                "Path": "data/DriveChain"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "InstallDriveChain"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetEngine",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetEngine.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Engine",
+                "Path": "data/Engine"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "InstallEngineOnFrame"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetExhaust",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetExhaust.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Exhaust",
+                "Path": "data/Exhaust"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "InstallExhaust"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetFender",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetFender.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Fender",
+                "Path": "data/Fender"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "InstallFender"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetFork",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetFork.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Fork",
+                "Path": "data/Fork"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "FrameWithFork"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetFrame",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetFrame.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Frame",
+                "Path": "data/Frame"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "FrameWithFork"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetGasTank",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetGasTank.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "GasTank",
+                "Path": "data/GasTank"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "InstallGasTankOnFrame"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetSeat",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetSeat.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Seat",
+                "Path": "data/Seat"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "InstallSeat"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "GetWheel",
+        "Sourcefile": "../test/assembleAMotocycle/prep_parts/GetWheel.sh",
+        "Inputs": [],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "Wheel",
+                "Path": "data/Wheel"
+            }
+        ],
+        "Parents": [],
+        "Children": [
+            "PumpUpWheels"
+        ],
+        "Missing": [],
+        "Status": "Ready",
+        "Level": 0
+    },
+    {
+        "Name": "FinalQA",
+        "Sourcefile": "../test/assembleAMotocycle/qa/FinalQA.sh",
+        "Inputs": [
+            {
+                "Md5sum": "",
+                "Name": "FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat",
+                "Path": "data/FrameWithForkWithEngineWithExhaustWithGasTankWithPumpedUpWheelWithFenderWithDriveChainWithSeat"
+            }
+        ],
+        "Outputs": [
+            {
+                "Md5sum": "",
+                "Name": "QA.rpt",
+                "Path": "data/QA.rpt"
+            }
+        ],
+        "Parents": [
+            "InstallSeat"
+        ],
+        "Children": [],
+        "Missing": [],
+        "Status": "Tracing",
+        "Level": 9
+    }
+]
+

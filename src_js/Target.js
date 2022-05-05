@@ -47,7 +47,7 @@ class Target {
       text: this.text,
       width: this.width,
       height: this.height,
-      fontSize: 30,
+      fontSize: 10,
       verticalAlign: 'middle',
       align: 'center',
     })
